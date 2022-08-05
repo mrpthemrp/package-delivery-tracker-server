@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This class creates a PackageDeliveryControl object which
@@ -29,7 +30,12 @@ public class PackageDeliveryControl {
     private final static int DATA_LOAD = 2;
     public static Gson gson;
     private static File gsonFile;
-    private static ArrayList<PackageBase> listOfPackages;
+    private static ArrayList<PackageBase> masterListOfPackages;
+    private static ArrayList<PackageBase> overduePackages;
+    private static ArrayList<PackageBase> upcomingPackages;
+    private JsonArray jsonArrayOfPackages;
+
+    private LocalDateTime currentTime;
 
     /**
      * Constructs a PackageDeliveryControl Object.
@@ -37,7 +43,11 @@ public class PackageDeliveryControl {
      */
     public PackageDeliveryControl() {
 
-        listOfPackages = new ArrayList<>();
+        this.currentTime = LocalDateTime.now();
+
+        masterListOfPackages = new ArrayList<>();
+        overduePackages = new ArrayList<>();
+        upcomingPackages = new ArrayList<>();
 
         String[] pathNames = {"src", "cmpt213", "assignment4", "packagedeliveries", "webappserver", "gson"};
         String path = String.join(Util.fs, pathNames);
@@ -95,14 +105,14 @@ public class PackageDeliveryControl {
         if (dataMode == DATA_SAVE) {
             try {
                 FileWriter fileWrite = new FileWriter(gsonFile);
-                JsonArray toJsonArray = new JsonArray();
+                jsonArrayOfPackages = new JsonArray();
                 //convert each object to Json string
-                for (PackageBase p : listOfPackages) {
+                for (PackageBase p : masterListOfPackages) {
                     if (p != null) {
-                        toJsonArray.add(gson.toJsonTree(p, PackageBase.class));
+                        jsonArrayOfPackages.add(gson.toJsonTree(p, PackageBase.class));
                     }
                 }
-                gson.toJson(toJsonArray, fileWrite);
+                gson.toJson(jsonArrayOfPackages, fileWrite);
                 fileWrite.close();
             } catch (IOException e) {
                 System.out.println("Could not save data!");
@@ -124,16 +134,82 @@ public class PackageDeliveryControl {
                 }
             }
 
-            listOfPackages = newArray;
+            masterListOfPackages = newArray;
         }
     }
 
+
+
     /**
-     * Helper method that allows the UI to access the master list.
-     *
-     * @return Returns master list.
+     * Helper method to update package's overdue status.
+     * @param packageDate The date to be compared against the current time.
+     * @return Returns true if package is overdue, false if not.
      */
-    public ArrayList<PackageBase> getListOfPackages() {
-        return listOfPackages;
+    private boolean isOverdue(LocalDateTime packageDate) {
+        return packageDate.isBefore(currentTime);
+    }
+    /**
+     * Helper method to update all lists; lists are also sorted after update.
+     * Current time is updated to LocalDateTime.now() here.
+     */
+    public final void updateLists() {
+        this.currentTime = LocalDateTime.now();
+        //reset upcoming and overdue
+        ArrayList<PackageBase> tempMasterList = new ArrayList<>();
+        upcomingPackages = new ArrayList<>();
+        overduePackages = new ArrayList<>();
+
+        //add necessary packages to lists
+        for (PackageBase tempPkg : masterListOfPackages) {
+            tempMasterList.add(tempPkg);
+            if (!tempPkg.isDelivered()) {
+                if (isOverdue(tempPkg.getExpectedDeliveryDate())) {
+                    if (!overduePackages.contains(tempPkg)) {
+                        overduePackages.add(tempPkg);
+                    }
+                } else {
+                    if (!upcomingPackages.contains(tempPkg)) {
+                        upcomingPackages.add(tempPkg);
+                    }
+                }
+
+            }
+        }
+        masterListOfPackages = tempMasterList;
+
+        //sort
+        Collections.sort(masterListOfPackages);
+        Collections.sort(upcomingPackages);
+        Collections.sort(overduePackages);
+    }
+
+    /**
+     * Helper method that allows the UI to access the lists.
+     * @param currentState Current state of UI tells method which list to return.
+     * @return Returns an ArrayList based on the current state.
+     */
+    public ArrayList<PackageBase> getAListOfPackages(Util.SCREEN_STATE currentState) {
+        switch (currentState) {
+            case LIST_ALL -> {
+                return masterListOfPackages;
+            }
+            case UPCOMING -> {
+                return upcomingPackages;
+            }
+            case OVERDUE -> {
+                return overduePackages;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper method that returns master list as.
+     *
+     * @return Returns master list as JSON object.
+     */
+    public JsonArray getListAsJSON() {
+        arrayData(DATA_SAVE);
+        return this.jsonArrayOfPackages;
     }
 }
