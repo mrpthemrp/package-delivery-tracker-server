@@ -27,7 +27,7 @@ import java.util.Collections;
 public class PackageDeliveryControl {
 
     public final static int DATA_SAVE = 1;
-    private final static int DATA_LOAD = 2;
+    public final static int DATA_LOAD = 2;
     public static Gson gson;
     private static File gsonFile;
     private static ArrayList<PackageBase> masterListOfPackages;
@@ -49,7 +49,7 @@ public class PackageDeliveryControl {
         overduePackages = new ArrayList<>();
         upcomingPackages = new ArrayList<>();
 
-        String[] pathNames = {"src", "cmpt213", "assignment4", "packagedeliveries", "webappserver", "gson"};
+        String[] pathNames = {"src","main","java", "cmpt213", "assignment4", "packagedeliveries", "webappserver", "gson"};
         String path = String.join(Util.fs, pathNames);
         gsonFile = new File(path + Util.fs + "list.json");
 

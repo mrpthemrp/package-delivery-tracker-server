@@ -15,6 +15,7 @@ public class Controller {
 
     @GetMapping("/ping")
     public String getPingMessage() {
+        control.arrayData(PackageDeliveryControl.DATA_LOAD);
         return "System is up!";
     }
 
@@ -29,12 +30,13 @@ public class Controller {
     }
 
     @GetMapping("/listUpcomingPackages")
-    public ArrayList<PackageBase> getUpcomingPackages() {
-        return control.getAListOfPackages(Util.SCREEN_STATE.UPCOMING);
+    public String getUpcomingPackages() {
+        return control.getAListOfPackages(Util.SCREEN_STATE.UPCOMING).toString();
     }
 
     @GetMapping("/exit")
-    public void exitClient() {
+    public String exitClient() {
         control.arrayData(PackageDeliveryControl.DATA_SAVE);
+        return "Client closed.";
     }
 }
