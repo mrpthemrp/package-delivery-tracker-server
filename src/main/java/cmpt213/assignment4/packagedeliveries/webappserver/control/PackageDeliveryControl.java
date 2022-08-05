@@ -139,7 +139,6 @@ public class PackageDeliveryControl {
     }
 
 
-
     /**
      * Helper method to update package's overdue status.
      * @param packageDate The date to be compared against the current time.
@@ -209,7 +208,8 @@ public class PackageDeliveryControl {
      * @return Returns master list as JSON object.
      */
     public JsonArray getListAsJSON() {
+        updateLists();
         arrayData(DATA_SAVE);
-        return this.jsonArrayOfPackages;
+        return jsonArrayOfPackages;
     }
 }
