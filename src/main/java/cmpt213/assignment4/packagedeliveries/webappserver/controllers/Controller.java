@@ -1,12 +1,9 @@
 package cmpt213.assignment4.packagedeliveries.webappserver.controllers;
 
-import cmpt213.assignment4.packagedeliveries.webappserver.WebAppServerApplication;
 import cmpt213.assignment4.packagedeliveries.webappserver.control.PackageDeliveryControl;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.PackageBase;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.Util;
 import com.google.gson.JsonArray;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,18 +21,17 @@ public class Controller {
 
     @GetMapping("/listAll")
     public String getAllPackages() {
-        System.out.println(control.getListAsJSON());
-        return control.getListAsJSON().toString();
+        return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
 
-    @GetMapping("/listOverduePackages")
-    public ArrayList<PackageBase> getOverduePackages() {
-        return control.getAListOfPackages(Util.SCREEN_STATE.OVERDUE);
+    @GetMapping("/listOverduePackage")
+    public String getOverduePackages() {
+        return control.getListAsJSON(Util.SCREEN_STATE.OVERDUE).toString();
     }
 
-    @GetMapping("/listUpcomingPackages")
+    @GetMapping("/listUpcomingPackage")
     public String getUpcomingPackages() {
-        return control.getAListOfPackages(Util.SCREEN_STATE.UPCOMING).toString();
+        return control.getListAsJSON(Util.SCREEN_STATE.UPCOMING).toString();
     }
 
     @GetMapping("/exit")

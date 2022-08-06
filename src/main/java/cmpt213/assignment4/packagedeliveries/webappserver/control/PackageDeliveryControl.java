@@ -18,6 +18,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static cmpt213.assignment4.packagedeliveries.webappserver.model.Util.SCREEN_STATE.LIST_ALL;
+
 /**
  * This class creates a PackageDeliveryControl object which
  * manages data for the program. This class handles data loading and saving.
@@ -33,7 +35,6 @@ public class PackageDeliveryControl {
     private static ArrayList<PackageBase> masterListOfPackages;
     private static ArrayList<PackageBase> overduePackages;
     private static ArrayList<PackageBase> upcomingPackages;
-    private JsonArray jsonArrayOfPackages;
 
     private LocalDateTime currentTime;
 
@@ -105,13 +106,7 @@ public class PackageDeliveryControl {
         if (dataMode == DATA_SAVE) {
             try {
                 FileWriter fileWrite = new FileWriter(gsonFile);
-                jsonArrayOfPackages = new JsonArray();
-                //convert each object to Json string
-                for (PackageBase p : masterListOfPackages) {
-                    if (p != null) {
-                        jsonArrayOfPackages.add(gson.toJsonTree(p, PackageBase.class));
-                    }
-                }
+                JsonArray jsonArrayOfPackages = toJsonArray(masterListOfPackages);
                 gson.toJson(jsonArrayOfPackages, fileWrite);
                 fileWrite.close();
             } catch (IOException e) {
@@ -183,33 +178,35 @@ public class PackageDeliveryControl {
     }
 
     /**
-     * Helper method that allows the UI to access the lists.
-     * @param currentState Current state of UI tells method which list to return.
-     * @return Returns an ArrayList based on the current state.
+     * Helper method that returns master list as.
+     *
+     * @return Returns master list as JSON object.
      */
-    public ArrayList<PackageBase> getAListOfPackages(Util.SCREEN_STATE currentState) {
+    public JsonArray getListAsJSON(Util.SCREEN_STATE currentState) {
+        updateLists();
+        arrayData(DATA_SAVE);
         switch (currentState) {
             case LIST_ALL -> {
-                return masterListOfPackages;
+                return toJsonArray(masterListOfPackages);
             }
             case UPCOMING -> {
-                return upcomingPackages;
+                return toJsonArray(upcomingPackages);
             }
             case OVERDUE -> {
-                return overduePackages;
+                return toJsonArray(overduePackages);
             }
         }
         return null;
     }
 
-    /**
-     * Helper method that returns master list as.
-     *
-     * @return Returns master list as JSON object.
-     */
-    public JsonArray getListAsJSON() {
-        updateLists();
-        arrayData(DATA_SAVE);
-        return jsonArrayOfPackages;
+    private JsonArray toJsonArray(ArrayList<PackageBase> list){
+        JsonArray jsonArray = new JsonArray();
+        //convert each object to Json string
+        for (PackageBase p : list) {
+            if (p != null) {
+                jsonArray.add(gson.toJsonTree(p, PackageBase.class));
+            }
+        }
+        return jsonArray;
     }
 }
