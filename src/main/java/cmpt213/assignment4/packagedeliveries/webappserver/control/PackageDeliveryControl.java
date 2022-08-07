@@ -30,6 +30,9 @@ public class PackageDeliveryControl {
 
     public final static int DATA_SAVE = 1;
     public final static int DATA_LOAD = 2;
+
+    public final static int REMOVE = 1;
+    public final static int DELIVERY_STATUS = 2;
     public static Gson gson;
     private static File gsonFile;
     private static ArrayList<PackageBase> masterListOfPackages;
@@ -43,7 +46,6 @@ public class PackageDeliveryControl {
      * Initializes class fields and also loads in any data from the JSON list.
      */
     public PackageDeliveryControl() {
-
         this.currentTime = LocalDateTime.now();
 
         masterListOfPackages = new ArrayList<>();
@@ -132,7 +134,21 @@ public class PackageDeliveryControl {
             masterListOfPackages = newArray;
         }
     }
-
+    /**
+     * Helper method for adjusting a given Package.
+     * Will either remove package or change its delivery state.
+     *
+     * @param pkg               The package to be adjusted.
+     * @param option            Which adjustment method is selected, based on constants from this class.
+     * @param newDeliveryStatus The new delivery status of package, false if option is to remove.
+     */
+    public void adjustPackage(PackageBase pkg, int option, boolean newDeliveryStatus) {
+        if (option == REMOVE) {
+            masterListOfPackages.remove(pkg);
+        } else if (option == DELIVERY_STATUS) {
+            pkg.setDeliveryStatus(newDeliveryStatus);
+        }
+    }
 
     /**
      * Helper method to update package's overdue status.
@@ -195,6 +211,7 @@ public class PackageDeliveryControl {
             case OVERDUE -> {
                 return toJsonArray(overduePackages);
             }
+
         }
         return null;
     }

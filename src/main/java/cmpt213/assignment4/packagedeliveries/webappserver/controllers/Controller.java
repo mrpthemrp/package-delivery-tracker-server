@@ -1,13 +1,11 @@
 package cmpt213.assignment4.packagedeliveries.webappserver.controllers;
 
 import cmpt213.assignment4.packagedeliveries.webappserver.control.PackageDeliveryControl;
-import cmpt213.assignment4.packagedeliveries.webappserver.model.PackageBase;
+import cmpt213.assignment4.packagedeliveries.webappserver.model.*;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.Util;
-import com.google.gson.JsonArray;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
+import com.google.gson.JsonObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Controller {
@@ -34,9 +32,35 @@ public class Controller {
         return control.getListAsJSON(Util.SCREEN_STATE.UPCOMING).toString();
     }
 
+    @PostMapping("/removePackage")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public String removePackage(@RequestBody String stringPkg) {
+        PackageBase pkg = deserializePackage(stringPkg);
+        control.adjustPackage(pkg, PackageDeliveryControl.REMOVE, false);
+        return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
+    }
+
     @GetMapping("/exit")
     public String exitClient() {
         control.arrayData(PackageDeliveryControl.DATA_SAVE);
         return "Client closed.";
+    }
+
+    private PackageBase deserializePackage(String stringPkg){
+        JsonObject jsonPkg = PackageDeliveryControl.gson.fromJson(stringPkg, JsonObject.class);
+        String pkgType = String.valueOf(jsonPkg.get("type"));
+        switch (pkgType){
+            case "Book" -> {
+                return PackageDeliveryControl.gson.fromJson(jsonPkg, Book.class);
+            }
+            case "Perishable" -> {
+                return PackageDeliveryControl.gson.fromJson(jsonPkg, Perishable.class);
+            }
+            case "Electronic" -> {
+                return PackageDeliveryControl.gson.fromJson(jsonPkg, Electronic.class);
+            }
+        }
+        return null;
     }
 }
