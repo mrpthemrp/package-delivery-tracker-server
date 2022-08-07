@@ -35,9 +35,9 @@ public class Controller {
     @PostMapping("/removePackage")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public String removePackage(@RequestBody String stringPkg) {
-        PackageBase pkg = deserializePackage(stringPkg);
-        control.adjustPackage(pkg, PackageDeliveryControl.REMOVE, false);
+    public String removePackage(@RequestBody int pkgIndex) {
+        PackageBase pkg = PackageDeliveryControl.masterListOfPackages.get(pkgIndex);
+        control.adjustPackage(pkg, pkgIndex, PackageDeliveryControl.REMOVE, false);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
 

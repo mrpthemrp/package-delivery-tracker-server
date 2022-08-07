@@ -35,7 +35,7 @@ public class PackageDeliveryControl {
     public final static int DELIVERY_STATUS = 2;
     public static Gson gson;
     private static File gsonFile;
-    private static ArrayList<PackageBase> masterListOfPackages;
+    public static ArrayList<PackageBase> masterListOfPackages;
     private static ArrayList<PackageBase> overduePackages;
     private static ArrayList<PackageBase> upcomingPackages;
 
@@ -142,9 +142,9 @@ public class PackageDeliveryControl {
      * @param option            Which adjustment method is selected, based on constants from this class.
      * @param newDeliveryStatus The new delivery status of package, false if option is to remove.
      */
-    public void adjustPackage(PackageBase pkg, int option, boolean newDeliveryStatus) {
+    public void adjustPackage(PackageBase pkg, int pkgIndex,  int option, boolean newDeliveryStatus) {
         if (option == REMOVE) {
-            masterListOfPackages.remove(pkg);
+            masterListOfPackages.remove(pkgIndex);
         } else if (option == DELIVERY_STATUS) {
             pkg.setDeliveryStatus(newDeliveryStatus);
         }
