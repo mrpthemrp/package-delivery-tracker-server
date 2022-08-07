@@ -3,6 +3,7 @@ package cmpt213.assignment4.packagedeliveries.webappserver.controllers;
 import cmpt213.assignment4.packagedeliveries.webappserver.control.PackageDeliveryControl;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.*;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.Util;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,18 @@ public class Controller {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public String removePackage(@RequestBody int pkgIndex) {
-        PackageBase pkg = PackageDeliveryControl.masterListOfPackages.get(pkgIndex);
-        control.adjustPackage(pkg, pkgIndex, PackageDeliveryControl.REMOVE, false);
+        control.adjustPackage(pkgIndex, PackageDeliveryControl.REMOVE, false);
+        return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
+    }
+
+    @PostMapping("/markPackageAsDelivered")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public String markPackageAsDelivered(@RequestBody String pkgChangeContent) {
+        JsonArray messageContent = PackageDeliveryControl.gson.fromJson(pkgChangeContent, JsonArray.class);
+        int index = PackageDeliveryControl.gson.fromJson(messageContent.get(0), Integer.class);
+        boolean newStatus = PackageDeliveryControl.gson.fromJson(messageContent.get(1), Boolean.class);
+        control.adjustPackage(index, PackageDeliveryControl.DELIVERY_STATUS, newStatus);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
 

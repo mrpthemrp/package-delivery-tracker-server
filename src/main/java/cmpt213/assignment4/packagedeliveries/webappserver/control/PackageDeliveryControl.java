@@ -134,19 +134,20 @@ public class PackageDeliveryControl {
             masterListOfPackages = newArray;
         }
     }
+
     /**
      * Helper method for adjusting a given Package.
      * Will either remove package or change its delivery state.
      *
-     * @param pkg               The package to be adjusted.
-     * @param option            Which adjustment method is selected, based on constants from this class.
-     * @param newDeliveryStatus The new delivery status of package, false if option is to remove.
+     * @param pkgIndex The index of the package in the list.
+     * @param option    Remove or set delivery status
+     * @param newDeliveryStatus The new delivery status, false if Remove is option.
      */
-    public void adjustPackage(PackageBase pkg, int pkgIndex,  int option, boolean newDeliveryStatus) {
+    public void adjustPackage(int pkgIndex,  int option, boolean newDeliveryStatus) {
         if (option == REMOVE) {
             masterListOfPackages.remove(pkgIndex);
         } else if (option == DELIVERY_STATUS) {
-            pkg.setDeliveryStatus(newDeliveryStatus);
+            masterListOfPackages.get(pkgIndex).setDeliveryStatus(newDeliveryStatus);
         }
     }
 
