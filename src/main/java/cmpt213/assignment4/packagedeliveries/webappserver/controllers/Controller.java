@@ -4,6 +4,7 @@ import cmpt213.assignment4.packagedeliveries.webappserver.control.PackageDeliver
 import cmpt213.assignment4.packagedeliveries.webappserver.model.*;
 import cmpt213.assignment4.packagedeliveries.webappserver.model.Util;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,15 @@ public class Controller {
         return control.getListAsJSON(Util.SCREEN_STATE.UPCOMING).toString();
     }
 
+    @PostMapping("/addPackage")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public String addPackage(@RequestBody String newPackage) {
+        PackageBase pkg = deserializePackage(newPackage);
+        PackageDeliveryControl.masterListOfPackages.add(pkg);
+        return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
+    }
+
     @PostMapping("/removePackage")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,6 +55,7 @@ public class Controller {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public String markPackageAsDelivered(@RequestBody String pkgChangeContent) {
+
         JsonArray messageContent = PackageDeliveryControl.gson.fromJson(pkgChangeContent, JsonArray.class);
         int index = PackageDeliveryControl.gson.fromJson(messageContent.get(0), Integer.class);
         boolean newStatus = PackageDeliveryControl.gson.fromJson(messageContent.get(1), Boolean.class);
@@ -58,20 +69,14 @@ public class Controller {
         return "Client closed.";
     }
 
-    private PackageBase deserializePackage(String stringPkg){
+    private PackageBase deserializePackage(String stringPkg) {
         JsonObject jsonPkg = PackageDeliveryControl.gson.fromJson(stringPkg, JsonObject.class);
-        String pkgType = String.valueOf(jsonPkg.get("type"));
-        switch (pkgType){
-            case "Book" -> {
-                return PackageDeliveryControl.gson.fromJson(jsonPkg, Book.class);
-            }
-            case "Perishable" -> {
-                return PackageDeliveryControl.gson.fromJson(jsonPkg, Perishable.class);
-            }
-            case "Electronic" -> {
-                return PackageDeliveryControl.gson.fromJson(jsonPkg, Electronic.class);
-            }
-        }
-        return null;
+        String pkgType = jsonPkg.get("type").getAsString();
+        return switch (pkgType) {
+            case "Book" -> PackageDeliveryControl.gson.fromJson(stringPkg, Book.class);
+            case "Perishable" -> PackageDeliveryControl.gson.fromJson(stringPkg, Perishable.class);
+            case "Electronic" -> PackageDeliveryControl.gson.fromJson(stringPkg, Electronic.class);
+            default -> null;
+        };
     }
 }
