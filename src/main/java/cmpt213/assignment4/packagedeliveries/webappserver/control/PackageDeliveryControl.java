@@ -18,8 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static cmpt213.assignment4.packagedeliveries.webappserver.model.Util.SCREEN_STATE.LIST_ALL;
-
 /**
  * This class creates a PackageDeliveryControl object which
  * manages data for the program. This class handles data loading and saving.
@@ -30,7 +28,6 @@ public class PackageDeliveryControl {
 
     public final static int DATA_SAVE = 1;
     public final static int DATA_LOAD = 2;
-
     public final static int REMOVE = 1;
     public final static int DELIVERY_STATUS = 2;
     public static Gson gson;
@@ -38,7 +35,6 @@ public class PackageDeliveryControl {
     public static ArrayList<PackageBase> masterListOfPackages;
     private static ArrayList<PackageBase> overduePackages;
     private static ArrayList<PackageBase> upcomingPackages;
-
     private LocalDateTime currentTime;
 
     /**
@@ -52,7 +48,7 @@ public class PackageDeliveryControl {
         overduePackages = new ArrayList<>();
         upcomingPackages = new ArrayList<>();
 
-        String[] pathNames = {"src","main","java", "cmpt213", "assignment4", "packagedeliveries", "webappserver", "gson"};
+        String[] pathNames = {"src", "main", "java", "cmpt213", "assignment4", "packagedeliveries", "webappserver", "gson"};
         String path = String.join(Util.fs, pathNames);
         gsonFile = new File(path + Util.fs + "list.json");
 
@@ -61,40 +57,19 @@ public class PackageDeliveryControl {
     }
 
     /**
-     * Helper method that sets up the GSON logic for this application.
-     * Registers subclasses of PackageBase into the RuntimeTypeAdapter.
+     * Helper method for adjusting a given Package.
+     * Will either remove package or change its delivery state.
+     *
+     * @param pkgIndex          The index of the package in the list.
+     * @param option            Remove or set delivery status
+     * @param newDeliveryStatus The new delivery status, false if Remove is option.
      */
-    private void setGsonBuilder() {
-        RuntimeTypeAdapterFactory<PackageBase> packageAdapterFactory = RuntimeTypeAdapterFactory.of(PackageBase.class, "type")
-                .registerSubtype(Book.class, "Book")
-                .registerSubtype(Perishable.class, "Perishable")
-                .registerSubtype(Electronic.class, "Electronic");
-
-        gson = new GsonBuilder()
-                .registerTypeAdapter(DateTimeFormatter.class, new TypeAdapter<DateTimeFormatter>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter, DateTimeFormatter dateTimeFormatter) throws IOException {
-                        jsonWriter.value(dateTimeFormatter.toString());
-                    }
-
-                    @Override
-                    public DateTimeFormatter read(JsonReader jsonReader) throws IOException {
-                        return DateTimeFormatter.ofPattern(jsonReader.nextString());
-                    }
-                })
-                .registerTypeAdapter(LocalDateTime.class, new TypeAdapter<LocalDateTime>() {
-                    @Override
-                    public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
-                        jsonWriter.value(localDateTime.toString());
-                    }
-
-                    @Override
-                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
-                        return LocalDateTime.parse(jsonReader.nextString());
-                    }
-                })
-                .registerTypeAdapterFactory(packageAdapterFactory)
-                .create();
+    public void adjustPackage(int pkgIndex, int option, boolean newDeliveryStatus) {
+        if (option == REMOVE) {
+            masterListOfPackages.remove(pkgIndex);
+        } else if (option == DELIVERY_STATUS) {
+            masterListOfPackages.get(pkgIndex).setDeliveryStatus(newDeliveryStatus);
+        }
     }
 
     /**
@@ -136,29 +111,28 @@ public class PackageDeliveryControl {
     }
 
     /**
-     * Helper method for adjusting a given Package.
-     * Will either remove package or change its delivery state.
+     * Helper method that returns master list as.
      *
-     * @param pkgIndex The index of the package in the list.
-     * @param option    Remove or set delivery status
-     * @param newDeliveryStatus The new delivery status, false if Remove is option.
+     * @return Returns master list as JSON object.
      */
-    public void adjustPackage(int pkgIndex,  int option, boolean newDeliveryStatus) {
-        if (option == REMOVE) {
-            masterListOfPackages.remove(pkgIndex);
-        } else if (option == DELIVERY_STATUS) {
-            masterListOfPackages.get(pkgIndex).setDeliveryStatus(newDeliveryStatus);
+    public JsonArray getListAsJSON(Util.SCREEN_STATE currentState) {
+        updateLists();
+        arrayData(DATA_SAVE);
+        switch (currentState) {
+            case LIST_ALL -> {
+                return toJsonArray(masterListOfPackages);
+            }
+            case UPCOMING -> {
+                return toJsonArray(upcomingPackages);
+            }
+            case OVERDUE -> {
+                return toJsonArray(overduePackages);
+            }
+
         }
+        return null;
     }
 
-    /**
-     * Helper method to update package's overdue status.
-     * @param packageDate The date to be compared against the current time.
-     * @return Returns true if package is overdue, false if not.
-     */
-    private boolean isOverdue(LocalDateTime packageDate) {
-        return packageDate.isBefore(currentTime);
-    }
     /**
      * Helper method to update all lists; lists are also sorted after update.
      * Current time is updated to LocalDateTime.now() here.
@@ -195,29 +169,59 @@ public class PackageDeliveryControl {
     }
 
     /**
-     * Helper method that returns master list as.
+     * Helper method to update package's overdue status.
      *
-     * @return Returns master list as JSON object.
+     * @param packageDate The date to be compared against the current time.
+     * @return Returns true if package is overdue, false if not.
      */
-    public JsonArray getListAsJSON(Util.SCREEN_STATE currentState) {
-        updateLists();
-        arrayData(DATA_SAVE);
-        switch (currentState) {
-            case LIST_ALL -> {
-                return toJsonArray(masterListOfPackages);
-            }
-            case UPCOMING -> {
-                return toJsonArray(upcomingPackages);
-            }
-            case OVERDUE -> {
-                return toJsonArray(overduePackages);
-            }
-
-        }
-        return null;
+    private boolean isOverdue(LocalDateTime packageDate) {
+        return packageDate.isBefore(currentTime);
     }
 
-    private JsonArray toJsonArray(ArrayList<PackageBase> list){
+    /**
+     * Helper method that sets up the GSON logic for this application.
+     * Registers subclasses of PackageBase into the RuntimeTypeAdapter.
+     */
+    private void setGsonBuilder() {
+        RuntimeTypeAdapterFactory<PackageBase> packageAdapterFactory = RuntimeTypeAdapterFactory.of(PackageBase.class, "type")
+                .registerSubtype(Book.class, "Book")
+                .registerSubtype(Perishable.class, "Perishable")
+                .registerSubtype(Electronic.class, "Electronic");
+
+        gson = new GsonBuilder()
+                .registerTypeAdapter(DateTimeFormatter.class, new TypeAdapter<DateTimeFormatter>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter, DateTimeFormatter dateTimeFormatter) throws IOException {
+                        jsonWriter.value(dateTimeFormatter.toString());
+                    }
+
+                    @Override
+                    public DateTimeFormatter read(JsonReader jsonReader) throws IOException {
+                        return DateTimeFormatter.ofPattern(jsonReader.nextString());
+                    }
+                })
+                .registerTypeAdapter(LocalDateTime.class, new TypeAdapter<LocalDateTime>() {
+                    @Override
+                    public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
+                        jsonWriter.value(localDateTime.toString());
+                    }
+
+                    @Override
+                    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                        return LocalDateTime.parse(jsonReader.nextString());
+                    }
+                })
+                .registerTypeAdapterFactory(packageAdapterFactory)
+                .create();
+    }
+
+    /**
+     * Helper method that converts an ArrayList into a JsonArray
+     *
+     * @param list List to be converted into JsonArray
+     * @return Returns list as a JsonArray.
+     */
+    private JsonArray toJsonArray(ArrayList<PackageBase> list) {
         JsonArray jsonArray = new JsonArray();
         //convert each object to Json string
         for (PackageBase p : list) {
@@ -227,5 +231,4 @@ public class PackageDeliveryControl {
         }
         return jsonArray;
     }
-
 }
