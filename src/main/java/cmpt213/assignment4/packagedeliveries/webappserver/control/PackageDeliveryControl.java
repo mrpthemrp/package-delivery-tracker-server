@@ -64,12 +64,25 @@ public class PackageDeliveryControl {
      * @param option            Remove or set delivery status
      * @param newDeliveryStatus The new delivery status, false if Remove is option.
      */
-    public void adjustPackage(int pkgIndex, int option, boolean newDeliveryStatus) {
-        if (option == REMOVE) {
-            masterListOfPackages.remove(pkgIndex);
-        } else if (option == DELIVERY_STATUS) {
-            masterListOfPackages.get(pkgIndex).setDeliveryStatus(newDeliveryStatus);
+    public void adjustPackage(int pkgIndex, int option, boolean newDeliveryStatus, Util.SCREEN_STATE currentState) {
+        ArrayList<PackageBase> list = null;
+        switch (currentState) {
+            case LIST_ALL -> list = masterListOfPackages;
+            case UPCOMING -> list = upcomingPackages;
+            case OVERDUE -> list = overduePackages;
         }
+
+        if (option == REMOVE) {
+            assert list != null;
+            if (list != masterListOfPackages) {
+                masterListOfPackages.remove(list.get(pkgIndex));
+            }
+            list.remove(pkgIndex);
+        } else if (option == DELIVERY_STATUS) {
+            assert list != null;
+            list.get(pkgIndex).setDeliveryStatus(newDeliveryStatus);
+        }
+        updateLists();
     }
 
     /**

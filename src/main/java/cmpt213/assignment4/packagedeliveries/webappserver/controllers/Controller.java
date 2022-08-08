@@ -76,21 +76,25 @@ public class Controller {
     /**
      * Method handles client request to remove a package.
      *
-     * @param pkgIndex Index of package to be removed.
+     * @param stringContents Index of package to be removed.
      * @return Returns a String in JSON format of updated list to all packages.
      */
     @PostMapping("/removePackage")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public String removePackage(@RequestBody int pkgIndex) {
-        control.adjustPackage(pkgIndex, PackageDeliveryControl.REMOVE, false);
+    public String removePackage(@RequestBody String stringContents) {
+        JsonArray messageContent = PackageDeliveryControl.gson.fromJson(stringContents, JsonArray.class);
+        int pkgIndex = PackageDeliveryControl.gson.fromJson(messageContent.get(0),Integer.class);
+        Util.SCREEN_STATE state = Enum.valueOf(Util.SCREEN_STATE.class,PackageDeliveryControl.gson.fromJson(messageContent.get(1),
+                String.class));
+        control.adjustPackage(pkgIndex, PackageDeliveryControl.REMOVE, false, state);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
 
     /**
      * Method handles client request to change package delivery status.
      *
-     * @param pkgChangeContent
+     * @param pkgChangeContent A string Array of two values, an index and a boolean.
      * @return Returns a String in JSON format of updated list to all packages.
      */
     @PostMapping("/markPackageAsDelivered")
@@ -100,7 +104,9 @@ public class Controller {
         JsonArray messageContent = PackageDeliveryControl.gson.fromJson(pkgChangeContent, JsonArray.class);
         int index = PackageDeliveryControl.gson.fromJson(messageContent.get(0), Integer.class);
         boolean newStatus = PackageDeliveryControl.gson.fromJson(messageContent.get(1), Boolean.class);
-        control.adjustPackage(index, PackageDeliveryControl.DELIVERY_STATUS, newStatus);
+        Util.SCREEN_STATE state = Enum.valueOf(Util.SCREEN_STATE.class,PackageDeliveryControl.gson.fromJson(messageContent.get(2),
+                String.class));
+        control.adjustPackage(index, PackageDeliveryControl.DELIVERY_STATUS, newStatus,state);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
 
