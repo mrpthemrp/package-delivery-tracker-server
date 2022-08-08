@@ -76,7 +76,7 @@ public class Controller {
     /**
      * Method handles client request to remove a package.
      *
-     * @param stringContents Index of package to be removed.
+     * @param stringContents String array that contains Index of package to be removed and current screen state.
      * @return Returns a String in JSON format of updated list to all packages.
      */
     @PostMapping("/removePackage")
@@ -87,6 +87,7 @@ public class Controller {
         int pkgIndex = PackageDeliveryControl.gson.fromJson(messageContent.get(0),Integer.class);
         Util.SCREEN_STATE state = Enum.valueOf(Util.SCREEN_STATE.class,PackageDeliveryControl.gson.fromJson(messageContent.get(1),
                 String.class));
+        System.out.println(state);
         control.adjustPackage(pkgIndex, PackageDeliveryControl.REMOVE, false, state);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
