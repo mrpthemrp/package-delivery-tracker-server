@@ -87,7 +87,6 @@ public class Controller {
         int pkgIndex = PackageDeliveryControl.gson.fromJson(messageContent.get(0),Integer.class);
         Util.SCREEN_STATE state = Enum.valueOf(Util.SCREEN_STATE.class,PackageDeliveryControl.gson.fromJson(messageContent.get(1),
                 String.class));
-        System.out.println(state);
         control.adjustPackage(pkgIndex, PackageDeliveryControl.REMOVE, false, state);
         return control.getListAsJSON(Util.SCREEN_STATE.LIST_ALL).toString();
     }
