@@ -96,7 +96,7 @@ This project is the final assignment for CMPT 213 ([Dr. Victor Cheung](http://ww
 
 ## 3. Citation Format
 Example of citing this project as a reference:
-> Reference used for writing a SpringBoot GetMapping: https://github.com/mrpthemrp/A-213-WebServer/blob/master/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/controllers/Controller.java
+> Reference used for writing a SpringBoot GetMapping: https://github.com/mrpthemrp/A-213-WebServer/blob/master/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/controllers/Controller.java  
 > Date Accessed: August 2022  
 > Developer: [Deborah Wang](https://github.com/mrpthemrp)
 
