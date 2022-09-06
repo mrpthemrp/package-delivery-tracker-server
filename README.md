@@ -12,7 +12,7 @@ If used as reference, please cite by providing link to project and author name \
 :hotsprings: **[JavaDocs Link](https://mrpthemrp.github.io/A-213-WebServer/)**
   
 Watch a quick demo of the project through the link below!  
-:vhs: **[Video Demo Link](??)**
+***Video Link coming soon!***
 
 ## :bookmark_tabs: Table of Contents
 1. [Project Description](#1-project-description)
