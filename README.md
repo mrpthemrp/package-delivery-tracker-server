@@ -7,7 +7,7 @@ It needs to be run with its counterpart, a :coffee: [Java Swing program](https:/
 :red_square: ***Please DO NOT COPY ANY CODE from this project!*** :red_square:
 
 This project is not intended to be open-source, feel free to use it as a reference but DO NOT FORK OR COPY!  
-If used as reference, please cite by providing link to project and author name \([see section below](#3-citation-format)\).
+If used as reference, please cite by providing link to project and author name \([see section below](#4-citation-format)\).
 
 :hotsprings: **[JavaDocs Link](https://mrpthemrp.github.io/A-213-WebServer/)**
   
@@ -19,7 +19,8 @@ Watch a quick demo of the project through the link below!
 2. [Installation Guide](#2-installation-guide)
    1. [Software Requirements](#computer-software-requirements)
    2. [Steps](#memo-steps)
-3. [Citation Format](#3-citation-format)
+3. [References](#3-refernces)
+4. [Citation Format](#4-citation-format)
 
 ## 1. Project Description
 
@@ -94,7 +95,15 @@ This project is the final assignment for CMPT 213 ([Dr. Victor Cheung](http://ww
 26. The project is now ready to run!
 </details>
 
-## 3. Citation Format
+## 3. References
+
+All references are cited within the program's [API](https://mrpthemrp.github.io/A-213-WebServer/).
+
+However, there are a few external libraries used that should be noted:
+- [Google GSON Libray](https://github.com/google/gson)
+    - [Runtime Type Adapter Factory](https://github.com/google/gson/blob/master/extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java)
+
+## 4. Citation Format
 Example of citing this project as a reference:
 > Reference used for writing a SpringBoot GetMapping: https://github.com/mrpthemrp/A-213-WebServer/blob/master/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/controllers/Controller.java  
 > Date Accessed: August 2022  
