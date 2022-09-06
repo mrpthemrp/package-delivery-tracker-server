@@ -8,6 +8,7 @@ This repository contains a :leaves::hiking_boot: Spring Boot application that is
 This project is not intended to be open-source, feel free to use it as a reference but DO NOT FORK OR COPY!  
 If used as reference, please cite by providing link to project and author name \([see section below](#3-citation-format)\).
 
+:hotsprings: **[JavaDocs Link](https://mrpthemrp.github.io/A-213-WebServer/)**
   
 Watch a quick demo of the project through the link below!  
 :vhs: **[Video Demo Link](??)**
