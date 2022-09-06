@@ -1,6 +1,7 @@
 # Package Delivery Tracker Web Server :desktop_computer:
 
-This repository contains a :leaves::hiking_boot: Spring Boot application that is the web server to a [package delivery tracker program](https://github.com/mrpthemrp/A-213).
+This repository contains a :leaves::hiking_boot: Spring Boot web server.  
+It needs to be run with its counterpart, a :coffee: [Java Swing program](https://github.com/mrpthemrp/A-213).
 
 :warning: ***Please DO NOT FORK this repository/project!*** :warning:  
 :red_square: ***Please DO NOT COPY ANY CODE from this project!*** :red_square:
