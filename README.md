@@ -1,7 +1,7 @@
 # Package Delivery Tracker Web Server :desktop_computer:
 
 This repository contains a :leaves::hiking_boot: Spring Boot web server.  
-It needs to be run with its counterpart, a :coffee: [Java Swing program](https://github.com/mrpthemrp/A-213).
+It needs to be run with its counterpart, a :coffee: [Java Swing program](https://github.com/mrpthemrp/package-delivery-tracker-client).
 
 :warning: ***Please DO NOT FORK this repository/project!*** :warning:  
 :red_square: ***Please DO NOT COPY ANY CODE from this project!*** :red_square:
@@ -9,7 +9,7 @@ It needs to be run with its counterpart, a :coffee: [Java Swing program](https:/
 This project is not intended to be open-source, feel free to use it as a reference but DO NOT FORK OR COPY!  
 If used as reference, please cite by providing link to project and author name \([see section below](#4-citation-format)\).
 
-:hotsprings: **[JavaDocs Link](https://mrpthemrp.github.io/A-213-WebServer/)**
+:hotsprings: **[JavaDocs Link](https://mrpthemrp.github.io/package-delivery-tracker-server/)**
   
 Watch a quick demo of the project through the link below!  
 ***Video Link coming soon!***
@@ -28,7 +28,7 @@ This project is the final assignment for CMPT 213 ([Dr. Victor Cheung](http://ww
 
 This repository contains a Spring Boot application that acts as a web server to hold and manipulate data (in [JSON](https://en.wikipedia.org/wiki/JSON) form) from the client app. Data is stored in a .json file in the [gson folder](/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/gson), and is created on first run.
 
-For a full project description, see the **[web app repository](https://github.com/mrpthemrp/A-213)**.
+For a full project description, see the **[web app repository](https://github.com/mrpthemrp/package-delivery-tracker-client)**.
 
 **See [video demo](#package-delivery-tracker-web-server-desktop_computer) for more comprehensive walkthrough.**
 
@@ -50,7 +50,7 @@ For a full project description, see the **[web app repository](https://github.co
 
 1. Download this project as a **ZIP file**.
     - Click **'Code'** and then **'Download ZIP'**.
-2. Unzip the main folder - **'A-213-WebServer-master'**.
+2. Unzip the main folder - **'package-delivery-tracker-server-master'**.
 3. Open **IntelliJ** and select **'Open'** or 'Open Project'.
 4. **Locate** where the **unzipped folder** from step 2 is on your machine. Click on the folder to open the project.
     - Click 'Trust Project' when the pop-up appears.
@@ -65,7 +65,7 @@ For a full project description, see the **[web app repository](https://github.co
 7. Select **'Language Level' to be 18**
     - Or whichever JDK number you are using.
 8. Make sure **'Compiler output:'** is set to the out folder
-    - It should already be set but if not make sure the path is **../A-213-WebServer-master/out**
+    - It should already be set but if not make sure the path is **../package-delivery-tracker-server-master/out**
 9. Go to **Libraries** which is **also under Project Settings**
 10. **Click on the "+" button** to add a library
 11. **Click "Maven"** from the library options
@@ -80,7 +80,7 @@ For a full project description, see the **[web app repository](https://github.co
 
 ## 3. References
 
-All references are cited within the program's [API](https://mrpthemrp.github.io/A-213-WebServer/).
+All references are cited within the program's [API](https://mrpthemrp.github.io/package-delivery-tracker-server/).
 
 However, there are a few external libraries used that should be noted:
 - [Google GSON Libray](https://github.com/google/gson)
@@ -88,7 +88,7 @@ However, there are a few external libraries used that should be noted:
 
 ## 4. Citation Format
 Example of citing this project as a reference:
-> Reference used for writing a SpringBoot GetMapping: https://github.com/mrpthemrp/A-213-WebServer/blob/master/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/controllers/Controller.java  
+> Reference used for writing a SpringBoot GetMapping: https://github.com/mrpthemrp//package-delivery-tracker-server/blob/master/src/main/java/cmpt213/assignment4/packagedeliveries/webappserver/controllers/Controller.java  
 > Date Accessed: August 2022  
 > Developer: [Deborah Wang](https://github.com/mrpthemrp)
 
